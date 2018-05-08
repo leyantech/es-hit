@@ -1,0 +1,25 @@
+[graphite]
+host  = "192.168.1.31"
+port = 2003
+prefix = "es-hit"
+
+[[rules]]
+name = "nginx-stdout-output-check" # never use dot(.) here
+es_url = "http://192.168.1.31:9200"
+index = "logstash*"
+check_every = "1m"
+search_filed = "message" 
+time_field = "@timestamp"
+pattern = "'nginx' stdout output"
+enabled = true
+
+
+[[rules]]
+name = "network-or-memberlist-check"
+es_url = "http://192.168.1.31:9200"
+index = "logstash*"
+check_every = "1m"
+search_filed = "message" 
+time_field = "@timestamp"
+pattern = "NETWORK OR (memberlist AND NOT DEBUG)"
+enabled = true

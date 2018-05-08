@@ -2,7 +2,12 @@
 
 Query ES then send hits number to Graphite
 
+## How to Run it
 
-## How it works?
+- Define query rules inside config.toml
+- `es-hit -config config/config.toml -verbose`
 
-Query ES base on rules defined, then save hit number to grahpite
+## TODO
+
+- Support other field as term search condition
+- Rules store inside DB, user can define it by themself
