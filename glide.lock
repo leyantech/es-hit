@@ -1,0 +1,33 @@
+hash: 937578e11d9fa415e1f3aad0f78268e29e1b5c151e0dbe68239e97e7dc23b2d5
+updated: 2018-05-08T23:21:39.784038635+08:00
+imports:
+- name: github.com/BurntSushi/toml
+  version: b26d9c308763d68093482582cea63d69be07a0f0
+- name: github.com/mailru/easyjson
+  version: 8b799c424f57fa123fc63a99d6383bc6e4c02578
+  subpackages:
+  - buffer
+  - jlexer
+  - jwriter
+- name: github.com/marpaia/graphite-golang
+  version: 134b9af18cf31f936ebddbd11c03eead4d501601
+- name: github.com/olivere/elastic
+  version: 4eb0cace57d54aa19e2c709e13979daeb20130a6
+  subpackages:
+  - config
+  - uritemplates
+- name: github.com/pkg/errors
+  version: ff09b135c25aae272398c51a07235b90a75aa4f0
+- name: github.com/sirupsen/logrus
+  version: c155da19408a8799da419ed3eeb0cb5db0ad5dbc
+- name: golang.org/x/crypto
+  version: 93b5df3bf36996258d005da151953da2030e346b
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/sys
+  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
+  subpackages:
+  - unix
+- name: gopkg.in/olivere/elastic.v5
+  version: 80585846d765de967183044c2840d4ed5e93f9e4
+testImports: []
