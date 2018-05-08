@@ -1,0 +1,18 @@
+[Unit]
+Description=ES-Hit
+Documentation=https://github.com/leyantech/es-hit
+After=local-fs.target network-online.target network.target
+Wants=local-fs.target network-online.target network.target
+
+[Service]
+ExecStart=/usr/local/bin/es-hit -config /usr/local/etc/es-hit.toml -verbose
+Type=simple
+Restart=always
+
+LimitNOFILE=1048576
+LimitNPROC=1048576
+LimitCORE=infinity
+
+
+[Install]
+WantedBy=multi-user.target

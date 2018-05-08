@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"git.leyantech.com/infrastructure/es-hit/es"
-	"git.leyantech.com/infrastructure/es-hit/graphite"
 	"github.com/BurntSushi/toml"
+	"github.com/leyantech/es-hit/es"
+	"github.com/leyantech/es-hit/graphite"
 	log "github.com/sirupsen/logrus"
 
 	"flag"
