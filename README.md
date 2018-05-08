@@ -1,7 +1,7 @@
 # ES Hit
+[![Build Status](https://travis-ci.org/leyantech/es-hit.svg?branch=master)](https://travis-ci.org/leyantech/es-hit)
 
 Query ES then send hits number to Graphite
-[![Build Status](https://travis-ci.org/leyantech/es-hit.svg?branch=master)](https://travis-ci.org/leyantech/es-hit)
 
 ## How to Run it
 

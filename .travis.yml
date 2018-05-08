@@ -2,15 +2,23 @@ language: go
 sudo: false
 
 go:
-  - "1.10.x"
+- 1.10.x
 
 before_install:
-  - curl https://glide.sh/get | sh
+- curl https://glide.sh/get | sh
 
 install:
-  - glide up
+- glide up
 
 script:
-  - go test -race
+- go build -o es-hit main.go
 
-
+deploy:
+  provider: releases
+  api_key:
+    secure: PD949DjDavEOHQz+P4zmh9OI+000AnlEE31UdoyzWFZ2KO8kHkXW7dpRcW5hIx/VvUjL4jXP3XN41wTx95y1CdNFdGdmfCZAio3hN3DSMtRS0wFCfdi3Ucz1pE3HyRnRSKQCZGR/ru55WEJqn24CSz4dSZ9tJ12nyaSR2n6zWBWkWBPHSbYroJC57L3rRU7N/bgnKmwdBXldQkRyHET5fokkQ2K7W08WB0GzcQJHaLHsTlUkkS3ajSpUa07MpHyxcw5svJQxisCxTEzgRz9RMg308R3nxRP7m4QZtCeVEG3nr7vy9rS33uGVhs9TelyQskP1ZqBSzqoqE9yZrVuPUz6yURyHdqiIGAScaMaZgFHPSN6ZxMG28KRw7m3K37JNRcPCmV31UoY0Znt9xcBLHySqQgmesXb5zvMsKwS9lHVD1KQj68AeT9taMl1bxYGEjFqCPsXkrUmr+4E9/DiTC8lqW9TT+Rqai/P6xIwztxE2I6HPllzpDssaR8FbvmM7jZjQMl7bPggS1o80PFnhOUfg5UhqJQHwYLSlLLFbddAnypCHNZlx2Edimhs20TuWFKdeugUE0UKrkAAddfEXuQ60e4tyLV+LpNsN3T1rt1dMDk1BzHFbyg5848yB2/lcci+g8chTuClance249o75d7x+OW+JFJh7c6yyCstSZg=
+  file: es-hit
+  on:
+    repo: leyantech/es-hit
+    tags: true
+  skip_cleanup: true
