@@ -3,7 +3,24 @@ host  = "192.168.1.31"
 port = 2003
 prefix = "es-hit"
 
-[[rules]]
+# es-hit can create rules from kibana saved search, dynamicly
+# just provide the es url here, and the saved search prefix 
+# - only the kibana saved search with desired prefix will treated as rule
+# - tested with only kibana 5.6.X version
+[[kibanas]]
+name = "lablogstash"
+index = "logstash*"
+kibana_es_url = "http://192.168.1.31:9200"
+should_prefix_with = "es-hit"
+watch_interval = "10s" # watch kibana_es_url for Saved Query changes
+check_every = "1m"
+time_field = "@timestamp"
+search_filed = "message" 
+enabled = true
+
+
+# static rules for es-hit
+[[static-rules]]
 name = "nginx-stdout-output-check" # never use dot(.) here
 es_url = "http://192.168.1.31:9200"
 index = "logstash*"
@@ -14,7 +31,7 @@ pattern = "'nginx' stdout output"
 enabled = true
 
 
-[[rules]]
+[[static-rules]]
 name = "network-or-memberlist-check"
 es_url = "http://192.168.1.31:9200"
 index = "logstash*"

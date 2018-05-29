@@ -3,6 +3,11 @@
 
 Query ES then send hits number to Graphite
 
+Support 2 types of search rules:
+
+- Static rules which defined inside configuration file.
+- Use saved search from kibana, which have specific prefix.
+
 ## How to Run it
 
 - Define query rules inside config.toml
@@ -20,4 +25,4 @@ Query ES then send hits number to Graphite
 ## TODO
 
 - Support other field as term search condition.
-- Rules store inside DB, user can define it by themself.
+- kibana rule need support filter
