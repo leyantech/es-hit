@@ -139,7 +139,10 @@ func (w *Wrapper) getSavedSearch(ctx context.Context) map[string]string {
 		return nil
 	}
 
-	searchResult, err := client.Search().Index(kibanaIndexName).Do(ctx)
+	searchResult, err := client.Search().
+		Index(kibanaIndexName).
+		Size(1000).
+		Type("search").Do(ctx)
 	if err != nil {
 		log.Errorf("Failed to search %s kibana indiex for geting Saved Search %v",
 			kibanaIndexName, err)
@@ -231,6 +234,7 @@ func filterSavedSearch(kibanaHits *elastic.SearchHits, prefix string) map[string
 			}
 		}
 	}
+	log.Infof("Fount %d matched results from kibana", len(savedRuleMap))
 	return savedRuleMap
 
 }
