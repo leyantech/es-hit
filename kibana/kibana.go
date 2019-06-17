@@ -2,14 +2,13 @@ package kibana
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/bitly/go-simplejson"
+	simplejson "github.com/bitly/go-simplejson"
 	"github.com/leyantech/es-hit/graphite"
 	log "github.com/sirupsen/logrus"
 
@@ -68,6 +67,11 @@ func NewWrapper(kibana *Kibana) (*Wrapper, error) {
 	return &Wrapper{Client: client, Kibana: kibana,
 		CheckInterval: checkInternal, WatchInterval: watchInternal,
 		ToSearch: make(chan map[string]string, 1)}, nil
+}
+
+// KSearch get from kibana
+type KSearch struct {
+	Search SavedSearch `json:"search"`
 }
 
 // SavedSearch get from kibana
@@ -148,10 +152,12 @@ func (w *Wrapper) getSavedSearch(ctx context.Context) map[string]string {
 		return nil
 	}
 
+	log.Infof("start to query %s with index: %s", w.Kibana.KibanaEsURL, kibanaIndexName)
 	searchResult, err := client.Search().
 		Index(kibanaIndexName).
+		From(0).
 		Size(1000).
-		Type("search").Do(ctx)
+		Do(ctx)
 	if err != nil {
 		log.Errorf("Failed to search %s kibana indiex for geting Saved Search %v",
 			kibanaIndexName, err)
@@ -159,10 +165,10 @@ func (w *Wrapper) getSavedSearch(ctx context.Context) map[string]string {
 	}
 
 	hitsCount := searchResult.TotalHits()
-	log.Debugf("Query Index %s took %d milliseconds found %d saved search",
+	log.Infof("Query Index %s took %d milliseconds found %d saved search",
 		kibanaIndexName, searchResult.TookInMillis, hitsCount)
 
-	savedSearch := filterSavedSearch(searchResult.Hits, w.Kibana.ShouldPrefixWith)
+	savedSearch := filterSavedSearch(searchResult, w.Kibana.ShouldPrefixWith)
 	return savedSearch
 }
 
@@ -216,21 +222,18 @@ func (w *Wrapper) getTotalHits(ctx context.Context, rawQuery string) int64 {
 	return hitsCount
 }
 
-func filterSavedSearch(kibanaHits *elastic.SearchHits, prefix string) map[string]string {
+func filterSavedSearch(kibanaSearch *elastic.SearchResult, prefix string) map[string]string {
 	var savedRuleMap = make(map[string]string)
-	for i := 1; i < len(kibanaHits.Hits); i++ {
-		var parsedEntry SavedSearch
-		jsonResult, _ := kibanaHits.Hits[i].Source.MarshalJSON()
-		err := json.Unmarshal(jsonResult, &parsedEntry)
-		if err != nil {
-			log.Errorf("JsonResult Failed to unmarshal %v, %v", jsonResult, err)
-		}
+	log.Infof("Found %d hits from kinana search", kibanaSearch.Hits.TotalHits)
+	var search KSearch
+	for _, item := range kibanaSearch.Each(reflect.TypeOf(search)) {
+		s := item.(KSearch)
+		if strings.HasPrefix(s.Search.Title, prefix) {
 
-		if strings.HasPrefix(parsedEntry.Title, prefix) {
-			dataJSON, err := simplejson.NewJson([]byte(parsedEntry.SavedObjectMeta.SearchSourceJSON))
+			dataJSON, err := simplejson.NewJson([]byte(s.Search.SavedObjectMeta.SearchSourceJSON))
 			if err != nil {
 				log.Errorf("simplejson Failed to make NewJson from %v, %v",
-					parsedEntry.SavedObjectMeta.SearchSourceJSON, err)
+					s.Search.SavedObjectMeta.SearchSourceJSON, err)
 				continue
 			}
 			jsonQuery, err := dataJSON.Get("query").Encode()
@@ -239,11 +242,11 @@ func filterSavedSearch(kibanaHits *elastic.SearchHits, prefix string) map[string
 			} else {
 				jsonQueryStr := string(jsonQuery)
 				log.Debugf("Matched query are: %v", jsonQueryStr)
-				savedRuleMap[parsedEntry.Title] = jsonQueryStr
+				savedRuleMap[s.Search.Title] = jsonQueryStr
 			}
 		}
 	}
-	log.Infof("Fount %d matched results from kibana", len(savedRuleMap))
+	log.Infof("Found %d matched results from kibana", len(savedRuleMap))
 	return savedRuleMap
 
 }

@@ -6,7 +6,7 @@ prefix = "es-hit"
 # es-hit can create rules from kibana saved search, dynamicly
 # just provide the es url here, and the saved search prefix 
 # - only the kibana saved search with desired prefix will treated as rule
-# - tested with only kibana 5.6.X version
+# - tested with only kibana 6.X version
 [[kibanas]]
 name = "lablogstash"
 index = "logstash*"
