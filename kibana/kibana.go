@@ -138,7 +138,11 @@ func (w *Wrapper) watchKibanaChange(ctx context.Context) {
 }
 
 func (w *Wrapper) getSavedSearch(ctx context.Context) map[string]string {
-	client, err := elastic.NewClient(elastic.SetURL(w.Kibana.KibanaEsURL))
+	client, err := elastic.NewClient(elastic.SetURL(w.Kibana.KibanaEsURL),
+		elastic.SetSniff(false),
+		elastic.SetHealthcheck(false),
+		elastic.SetBasicAuth(w.Kibana.KibanaEsUser, w.Kibana.KibanaEsPass))
+
 	if err != nil {
 		log.Errorf("watchKibana Failed to Make ES client for %v, %v", w.Kibana.KibanaEsURL, err)
 		return nil
