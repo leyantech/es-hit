@@ -5,5 +5,5 @@ import:
 - package: github.com/marpaia/graphite-golang
 - package: github.com/sirupsen/logrus
   version: ^1.0.5
-- package: gopkg.in/olivere/elastic.v5
-  version: ^6.1.16
+- package: github.com/olivere/elastic/v6
+  version: ^6.2.19

@@ -6,13 +6,15 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	elastic "gopkg.in/olivere/elastic.v5"
+	elastic "gopkg.in/olivere/elastic.v6"
 )
 
 // Rule for es query
 type Rule struct {
 	Name        string `toml:"name"`
 	EsURL       string `toml:"es_url"`
+	EsUser      string `toml:"es_user"`
+	EsPass      string `toml:"es_pass"`
 	Index       string `toml:"index"`
 	CheckEvery  string `toml:"check_every"`
 	SearchField string `toml:"search_field"`
@@ -34,7 +36,11 @@ type Log struct {
 
 // NewWrapper create new ES instance
 func NewWrapper(rule *Rule) (*Wrapper, error) {
-	client, err := elastic.NewClient(elastic.SetURL(rule.EsURL))
+
+	client, err := elastic.NewClient(elastic.SetURL(rule.EsURL),
+		elastic.SetSniff(false),
+		elastic.SetHealthcheck(false),
+		elastic.SetBasicAuth(rule.EsUser, rule.EsPass))
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create ElasticSearch Client for %s, %v", rule.EsURL, err)

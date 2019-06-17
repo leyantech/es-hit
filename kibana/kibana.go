@@ -22,6 +22,8 @@ const kibanaIndexName = ".kibana"
 type Kibana struct {
 	Name             string `toml:"name"`
 	KibanaEsURL      string `toml:"kibana_es_url"`
+	KibanaEsUser     string `toml:"kibana_es_user"`
+	KibanaEsPass     string `toml:"kibana_es_pass"`
 	Index            string `toml:"index"`
 	ShouldPrefixWith string `toml:"should_prefix_with"`
 	WatchInterval    string `toml:"watch_interval"`
@@ -44,7 +46,10 @@ type Wrapper struct {
 
 // NewWrapper create new ES instance for query kibana indes
 func NewWrapper(kibana *Kibana) (*Wrapper, error) {
-	client, err := elastic.NewClient(elastic.SetURL(kibana.KibanaEsURL))
+	client, err := elastic.NewClient(elastic.SetURL(kibana.KibanaEsURL),
+		elastic.SetSniff(false),
+		elastic.SetHealthcheck(false),
+		elastic.SetBasicAuth(kibana.KibanaEsUser, kibana.KibanaEsPass))
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create ElasticSearch Client for %s, %v",

@@ -11,6 +11,8 @@ prefix = "es-hit"
 name = "lablogstash"
 index = "logstash*"
 kibana_es_url = "http://192.168.1.31:9200"
+kibana_es_user = "user"
+kibana_es_pass = ""
 should_prefix_with = "es-hit"
 watch_interval = "10s" # watch kibana_es_url for Saved Query changes
 check_every = "1m"
@@ -23,6 +25,8 @@ enabled = true
 [[static-rules]]
 name = "nginx-stdout-output-check" # never use dot(.) here
 es_url = "http://192.168.1.31:9200"
+es_user = "user"
+es_pass = ""
 index = "logstash*"
 check_every = "1m"
 search_filed = "message" 
@@ -34,6 +38,8 @@ enabled = true
 [[static-rules]]
 name = "network-or-memberlist-check"
 es_url = "http://192.168.1.31:9200"
+es_user = "user"
+es_pass = ""
 index = "logstash*"
 check_every = "1m"
 search_filed = "message" 
