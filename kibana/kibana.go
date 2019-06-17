@@ -202,8 +202,10 @@ func (w *Wrapper) getTotalHits(ctx context.Context, rawQuery string) int64 {
 	queryTime := elastic.NewRangeQuery(w.Kibana.TimeField).Gte(from).Lte("now")
 	realQ = realQ.Filter(queryTime)
 
+	newSearchTerm := fmt.Sprintf("{\"query_string\":{ \"query\": %s}  }", rawQuery)
+	log.Infof("Going to Query for %s", newSearchTerm)
 	// use Raw String Query for kibana saved search
-	querySearch := elastic.RawStringQuery(rawQuery)
+	querySearch := elastic.RawStringQuery(newSearchTerm)
 	realQ = realQ.Must(querySearch)
 
 	searchResult, err := w.Client.Search().
@@ -211,7 +213,7 @@ func (w *Wrapper) getTotalHits(ctx context.Context, rawQuery string) int64 {
 		Query(realQ).
 		Do(context.Background())
 	if err != nil {
-		log.Errorf("Failed to Query for %s, %v", rawQuery, err)
+		log.Errorf("Failed to Query for %s, %v", newSearchTerm, err)
 		return -1
 	}
 
@@ -236,7 +238,7 @@ func filterSavedSearch(kibanaSearch *elastic.SearchResult, prefix string) map[st
 					s.Search.SavedObjectMeta.SearchSourceJSON, err)
 				continue
 			}
-			jsonQuery, err := dataJSON.Get("query").Encode()
+			jsonQuery, err := dataJSON.Get("query").Get("query").Encode()
 			if err != nil {
 				log.Errorf("dataJSON failed %v", err)
 			} else {
