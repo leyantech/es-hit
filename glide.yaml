@@ -1,0 +1,9 @@
+package: github.com/leyantech/es-hit
+import:
+- package: github.com/BurntSushi/toml
+  version: ^0.3.0
+- package: github.com/marpaia/graphite-golang
+- package: github.com/sirupsen/logrus
+  version: ^1.0.5
+- package: github.com/olivere/elastic/v6
+  version: ^6.2.19

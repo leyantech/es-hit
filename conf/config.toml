@@ -1,0 +1,48 @@
+[graphite]
+host  = "192.168.1.31"
+port = 2003
+prefix = "es-hit"
+
+# es-hit can create rules from kibana saved search, dynamicly
+# just provide the es url here, and the saved search prefix 
+# - only the kibana saved search with desired prefix will treated as rule
+# - tested with only kibana 6.X version
+[[kibanas]]
+name = "lablogstash"
+index = "logstash*"
+kibana_es_url = "http://192.168.1.31:9200"
+kibana_es_user = "user"
+kibana_es_pass = ""
+should_prefix_with = "es-hit"
+watch_interval = "10s" # watch kibana_es_url for Saved Query changes
+check_every = "1m"
+time_field = "@timestamp"
+search_filed = "message" 
+enabled = true
+
+
+# static rules for es-hit
+[[static-rules]]
+name = "nginx-stdout-output-check" # never use dot(.) here
+es_url = "http://192.168.1.31:9200"
+es_user = "user"
+es_pass = ""
+index = "logstash*"
+check_every = "1m"
+search_filed = "message" 
+time_field = "@timestamp"
+pattern = "'nginx' stdout output"
+enabled = true
+
+
+[[static-rules]]
+name = "network-or-memberlist-check"
+es_url = "http://192.168.1.31:9200"
+es_user = "user"
+es_pass = ""
+index = "logstash*"
+check_every = "1m"
+search_filed = "message" 
+time_field = "@timestamp"
+pattern = "NETWORK OR (memberlist AND NOT DEBUG)"
+enabled = true
